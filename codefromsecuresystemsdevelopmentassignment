@@ -1,0 +1,92 @@
+//Review item #1: Add Customer.cs (model) Scoops2Go Team commented on Jan 29th, 2024: I have added a new model for customers using Scoops2Go. 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Scheme;
+using Microsoft.EntityFrameworkCore;
+using System;
+using Models;
+using System Collections.Generic;
+
+namespace Models
+{
+    public class Customer
+    {
+        [Key]
+        [DatabaseGenerated{DatabseGeneratedOption.Identity}]
+        public interface Id { get; set; }
+
+        //Properties
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string FavouriteFlavour { get; set; }
+    }
+}
+
+
+
+//Review item #2: Add Retailer.cs (domain) Scoops2Go Team commented on Jan 30th, 2024: I have added business logic to read retailers from the database. 
+    public List<RetailerDTO> ReadRetailers()
+    {
+        List<RetailerDTO> retailer = new List<RetailerDTO>();
+
+        foreach (Models.Retailer retailer in context.Retailers)
+        {
+            retailers.Add(new RetailerDTO
+            {
+                Id = retailer.ID,
+                CreatesAt = retailer.CreatedAt,
+                nameof = retailer.Name,
+                AvgOrderTime = retailer.AvgOrderTime,
+                IncomeGenerated = retailer.IncomeGenerated
+            });
+        }
+
+        return retailers
+    }
+
+
+//Review item #3: Add Customer.cs (domain) Scoops2Go Team commented on Jan 31st, 2024: I have added business logic to read users from the database.
+    public List<RetailerDTO> ReadCustomer(string email)
+    {
+        var query = $"SELECT * FROM Customers WHERE Email ='{email}'";
+        var customers = contect.Customers.FromSqlRaw(query);
+        
+        List<CustomerDTO> customerDTOs = new List<CustomerDTO>();
+        foreach (var customer in customers)
+        {
+            var customerDTO = new CustomerDTO
+            {
+                Id = customer.Id,
+                email = customer.Email,
+                name = customer.Name,
+                Address = customer.Address,
+                Favourite = customer.FavouriteFlavour
+            };
+
+            customerDTOs.Add(customerDTO);
+        }
+
+
+        return customerDTOs;
+    }
+
+
+//Review item #4: Update appsettings.json Scoops2Go Team commented on Feb 3rd, 2024: Minor changes to appsettings.json.
+{
+    "Stripe": {
+        "Key": "AbCdEfghIkLMnoqRstuvwxyz"
+    },
+    "ConnectionStrings": {
+        "Database": "Data Soruce=LocalDatabase.db"
+    },
+    "Logging": {
+        "LogLevel": {
+            "Microsoft": "Warning"
+        },
+        "Console": {
+            "LogLevel": {
+                "Microsoft": "Information"
+            }
+        }
+    }
+}
